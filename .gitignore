@@ -21,3 +21,6 @@ web/bun.lock
 
 electron/node_modules
 electron/dist
+
+# Docker Compose
+docker-compose.yml
