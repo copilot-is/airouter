@@ -33,8 +33,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Merge airouter branch
-        run: git merge origin/airouter --no-commit --no-ff || true
+      - name: Fetch and merge airouter branch
+        run: |
+          git fetch origin airouter
+          git merge origin/airouter --no-commit --no-ff
 
       - name: Resolve tag & write VERSION
         run: |
