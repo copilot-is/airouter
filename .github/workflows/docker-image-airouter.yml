@@ -93,7 +93,7 @@ jobs:
       - name: Resolve tag
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            TAG="manual-$(date +'%Y%m%d')-$(git rev-parse --short HEAD)"
+            TAG="manual-$(date +'%Y%m%d')-${GITHUB_SHA::8}"
           else
             TAG=${GITHUB_REF#refs/tags/}
           fi
