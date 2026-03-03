@@ -3,10 +3,10 @@ name: Build Electron App
 on:
   push:
     tags:
-      - '*'  # Triggers on version tags like v1.0.0
-      - '!*-*'  # Ignore pre-release tags like v1.0.0-beta
-      - '!*-alpha*' # Ignore alpha tags like v1.0.0-alpha
-  workflow_dispatch:  # Allows manual triggering
+      - "*" # Triggers on version tags like v1.0.0
+      - "!*-*" # Ignore pre-release tags like v1.0.0-beta
+      - "!*-alpha*" # Ignore alpha tags like v1.0.0-alpha
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   build:
@@ -26,6 +26,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch and merge airouter branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin airouter
+          git merge origin/airouter --no-commit --no-ff
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -34,12 +41,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '>=1.25.1'
+          go-version: ">=1.25.1"
 
       - name: Build frontend
         env:
@@ -75,9 +82,9 @@ jobs:
             MINOR=${BASH_REMATCH[2]}
             PATCH=${BASH_REMATCH[3]}
             REST=${BASH_REMATCH[4]}
-          
+
             VERSION="$MAJOR.$MINOR.$PATCH"
-          
+
             # If there's extra content, append it without adding -dev
             if [[ -n "$REST" ]]; then
               VERSION="$VERSION$REST"
