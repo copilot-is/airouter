@@ -35,5 +35,3 @@ data/
 .test
 token_estimator_test.go
 skills-lock.json
-web/classic/node_modules
-web/default/node_modules

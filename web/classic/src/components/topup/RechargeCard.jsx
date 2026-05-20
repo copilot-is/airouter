@@ -96,6 +96,7 @@ const RechargeCard = ({
   activeSubscriptions = [],
   allSubscriptions = [],
   reloadSubscriptionSelf,
+  enableRedemption = true,
 }) => {
   const onlineFormApiRef = useRef(null);
   const redeemFormApiRef = useRef(null);
@@ -491,7 +492,7 @@ const RechargeCard = ({
                               style={{ margin: '0 0 8px 0' }}
                             >
                               <Coins size={18} />
-                              {symbol}{formatLargeNumber(displayValue)}
+                              {formatLargeNumber(displayValue)} {symbol}
                               {hasDiscount && (
                                 <Tag style={{ marginLeft: 4 }} color='green'>
                                   {t('折').includes('off')
@@ -511,11 +512,11 @@ const RechargeCard = ({
                                 margin: '4px 0',
                               }}
                             >
-                              {t('实付')}
-                              {' '}{displayActualPay.toFixed(2)} 元，
+                              {t('实付')} {symbol}
+                              {displayActualPay.toFixed(2)}，
                               {hasDiscount
-                                ? `${t('节省')} ${displaySave.toFixed(2)} 元`
-                                : `${t('节省')} 0.00 元`} 
+                                ? `${t('节省')} ${symbol}${displaySave.toFixed(2)}`
+                                : `${t('节省')} ${symbol}0.00`}
                             </div>
                           </div>
                         </Card>
@@ -566,57 +567,66 @@ const RechargeCard = ({
       </Card>
 
       {/* 兑换码充值 */}
-      <Card
-        className='!rounded-xl w-full'
-        title={
-          <Text type='tertiary' strong>
-            {t('兑换码充值')}
-          </Text>
-        }
-      >
-        <Form
-          getFormApi={(api) => (redeemFormApiRef.current = api)}
-          initValues={{ redemptionCode: redemptionCode }}
+      {enableRedemption ? (
+        <Card
+          className='!rounded-xl w-full'
+          title={
+            <Text type='tertiary' strong>
+              {t('兑换码充值')}
+            </Text>
+          }
         >
-          <Form.Input
-            field='redemptionCode'
-            noLabel={true}
-            placeholder={t('请输入兑换码')}
-            value={redemptionCode}
-            onChange={(value) => setRedemptionCode(value)}
-            prefix={<IconGift />}
-            suffix={
-              <div className='flex items-center gap-2'>
-                <Button
-                  type='primary'
-                  theme='solid'
-                  onClick={topUp}
-                  loading={isSubmitting}
-                >
-                  {t('兑换额度')}
-                </Button>
-              </div>
-            }
-            showClear
-            style={{ width: '100%' }}
-            extraText={
-              topUpLink && (
-                <Text type='tertiary'>
-                  {t('在找兑换码？')}
-                  <Text
-                    type='secondary'
-                    underline
-                    className='cursor-pointer'
-                    onClick={openTopUpLink}
+          <Form
+            getFormApi={(api) => (redeemFormApiRef.current = api)}
+            initValues={{ redemptionCode: redemptionCode }}
+          >
+            <Form.Input
+              field='redemptionCode'
+              noLabel={true}
+              placeholder={t('请输入兑换码')}
+              value={redemptionCode}
+              onChange={(value) => setRedemptionCode(value)}
+              prefix={<IconGift />}
+              suffix={
+                <div className='flex items-center gap-2'>
+                  <Button
+                    type='primary'
+                    theme='solid'
+                    onClick={topUp}
+                    loading={isSubmitting}
                   >
-                    {t('购买兑换码')}
+                    {t('兑换额度')}
+                  </Button>
+                </div>
+              }
+              showClear
+              style={{ width: '100%' }}
+              extraText={
+                topUpLink && (
+                  <Text type='tertiary'>
+                    {t('在找兑换码？')}
+                    <Text
+                      type='secondary'
+                      underline
+                      className='cursor-pointer'
+                      onClick={openTopUpLink}
+                    >
+                      {t('购买兑换码')}
+                    </Text>
                   </Text>
-                </Text>
-              )
-            }
-          />
-        </Form>
-      </Card>
+                )
+              }
+            />
+          </Form>
+        </Card>
+      ) : (
+        <Banner
+          type='warning'
+          description={t('兑换码功能已禁用，管理员需先确认合规声明。')}
+          closeIcon={null}
+          className='!rounded-xl'
+        />
+      )}
     </Space>
   );
 
